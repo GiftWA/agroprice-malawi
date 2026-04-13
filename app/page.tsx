@@ -273,7 +273,7 @@ export default function Home() {
   </span>
 </div>
         Empowering farmers with real market data across Malawi
-        <div style={{ marginTop: "8px", fontSize: "11px" }}>© 2025 AgroPrice Malawi</div>
+        <div style={{ marginTop: "8px", fontSize: "11px" }}>© {new Date().getFullYear()} AgroPrice Malawi</div>
       </footer>
 
     </main>
