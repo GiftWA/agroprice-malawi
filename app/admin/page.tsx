@@ -148,7 +148,7 @@ export default function AdminLogin() {
 </p>
 
         <p style={{ fontSize: "12px", color: "#bbb", textAlign: "center", marginTop: "32px" }}>
-          AgroPrice Malawi Admin Panel · © {new Date().getFullYear()}
+          © {new Date().getFullYear()}  AgroPrice Malawi Admin Panel ·
         </p>
       </div>
 
