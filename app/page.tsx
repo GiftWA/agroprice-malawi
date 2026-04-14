@@ -23,7 +23,7 @@ const T = {
   },
   chi: {
     tagline: "MITENGO YA MSIKA WA MALAWI",
-    hero: "Dziwani Mitengo Musanagulitse!",
+    hero: "Dziwani Mtengo Musanagulitse!",
     sub: "Mitengo yeniyeni ya mbewu kuchokera ku misika ya M'malawi — kuti alimi asagulitse moluza kapena mokwera kwambiri!",
     markets: "Misika", cropsTracked: "Mbewu zotsatidwa", entries: "Mitengo yonse",
     searchPlaceholder: "🔍  Sakani mbewu kapena msika...",
