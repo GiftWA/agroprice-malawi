@@ -134,7 +134,19 @@ export const prices = [
   {id:86,crop:"Bananas",unit:"MWK/bunch",market:"Lilongwe (Kanengo)",price:3200,trend:"up",updated:"2025-04-10"},
   {id:87,crop:"Bananas",unit:"MWK/bunch",market:"Zomba",price:2600,trend:"stable",updated:"2025-04-09"},
   {id:88,crop:"Bananas",unit:"MWK/bunch",market:"Chikhwawa",price:2400,trend:"down",updated:"2025-04-09"},
-];
+// Cabbage
+  {id:89,crop:"Cabbage",unit:"MWK/piece",market:"Lilongwe (Kanengo)",price:800,trend:"stable",updated:"2025-04-17"},
+  {id:90,crop:"Cabbage",unit:"MWK/piece",market:"Blantyre (Lunzu)",price:900,trend:"up",updated:"2025-04-17"},
+  {id:91,crop:"Cabbage",unit:"MWK/piece",market:"Mzuzu",price:700,trend:"stable",updated:"2025-04-17"},
+  {id:92,crop:"Cabbage",unit:"MWK/piece",market:"Zomba",price:750,trend:"down",updated:"2025-04-16"},
+  {id:93,crop:"Cabbage",unit:"MWK/piece",market:"Thyolo",price:650,trend:"stable",updated:"2025-04-16"},
 
+  // Sweet potato
+  {id:94,crop:"Sweet potato",unit:"MWK/kg",market:"Lilongwe (Kanengo)",price:600,trend:"up",updated:"2025-04-17"},
+  {id:95,crop:"Sweet potato",unit:"MWK/kg",market:"Blantyre (Lunzu)",price:700,trend:"up",updated:"2025-04-17"},
+  {id:96,crop:"Sweet potato",unit:"MWK/kg",market:"Ntcheu",price:500,trend:"stable",updated:"2025-04-16"},
+  {id:97,crop:"Sweet potato",unit:"MWK/kg",market:"Zomba",price:550,trend:"up",updated:"2025-04-16"},
+  {id:98,crop:"Sweet potato",unit:"MWK/kg",market:"Mulanje",price:480,trend:"stable",updated:"2025-04-16"},
+];
 
 export const crops = [...new Set(prices.map(p => p.crop))];

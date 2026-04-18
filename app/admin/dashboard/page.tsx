@@ -1,4 +1,5 @@
 "use client";
+import { cropNameChi } from "@/app/page";
 import { useState } from "react";
 import { prices as initialPrices, crops, markets } from "@/data/prices";
 
@@ -152,7 +153,7 @@ export default function AdminDashboard() {
               <label style={{ fontSize: "12px", color: "#555", display: "block", marginBottom: "4px" }}>Crop</label>
               <select value={crop} onChange={e => setCrop(e.target.value)} style={inputStyle}>
                 <option value="">Select crop</option>
-                {crops.map(c => <option key={c} value={c}>{c}</option>)}
+                {crops.map(c => <option key={c} value={c}>{c} / {cropNameChi[c] || c}</option>)}
                 <option value="__new__">+ Add new crop</option>
               </select>
             </div>
