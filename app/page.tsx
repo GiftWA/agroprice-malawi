@@ -1,5 +1,5 @@
 "use client";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { prices, crops, markets } from "@/data/prices";
 
 const C = {
@@ -13,7 +13,7 @@ const T = {
     hero: "Know the price before you sell",
     sub: "Real crop prices from markets across Malawi — so farmers never sell at a loss again",
     markets: "Markets", cropsTracked: "Crops tracked", entries: "Price entries",
-    searchPlaceholder: "🔍  Search crop or market...",
+    searchPlaceholder: "Search crop or market...",
     allCrops: "All crops", allMarkets: "All markets", clear: "✕ Clear",
     showing: "Showing", prices: "prices", price: "price",
     updatedLabel: "Updated:", noResults: "No prices found for that filter.",
@@ -26,7 +26,7 @@ const T = {
     hero: "Dziwani Mtengo Musanagulitse!",
     sub: "Mitengo yeniyeni ya mbewu kuchokera ku misika ya M'malawi — kuti alimi asagulitse moluza kapena mokwera kwambiri!",
     markets: "Misika", cropsTracked: "Mbewu zotsatidwa", entries: "Mitengo yonse",
-    searchPlaceholder: "🔍  Sakani mbewu kapena msika...",
+    searchPlaceholder: "Sakani mbewu kapena msika...",
     allCrops: "Mbewu zonse", allMarkets: "Misika yonse", clear: "✕ Chotsani",
     showing: "Akuwonetsa", prices: "mitengo", price: "mtengo",
     updatedLabel: "Yosintha:", noResults: "Palibe mitengo yopezeka.",
@@ -101,6 +101,22 @@ const trendIcon = (trend: string) => {
   return                       { symbol: "→", color: "#777" };
 };
 
+function useCountUp(target: number, duration = 1500) {
+  const [count, setCount] = useState(0);
+  const ref = useRef<NodeJS.Timeout | null>(null);
+  useEffect(() => {
+    let start = 0;
+    const step = Math.ceil(target / (duration / 30));
+    ref.current = setInterval(() => {
+      start += step;
+      if (start >= target) { setCount(target); clearInterval(ref.current!); }
+      else setCount(start);
+    }, 30);
+    return () => clearInterval(ref.current!);
+  }, [target, duration]);
+  return count;
+}
+
 export default function Home() {
   const [lang, setLang]                     = useState<"en"|"chi">("en");
   const [selectedCrop, setSelectedCrop]     = useState("All");
@@ -108,6 +124,10 @@ export default function Home() {
   const [search, setSearch]                 = useState("");
 
   const t = T[lang];
+
+  const countMarkets  = useCountUp(markets.length);
+  const countCrops    = useCountUp(crops.length);
+  const countPrices   = useCountUp(prices.length);
 
   const filtered = useMemo(() => prices.filter(p => {
     const matchCrop   = selectedCrop   === "All" || p.crop   === selectedCrop;
@@ -137,8 +157,8 @@ export default function Home() {
           gap: 16px;
         }
         .filters-row { display: flex; flex-wrap: wrap; gap: 12px; }
-        .nav-subtitle { display: block; }
-        @media (max-width: 600px) {
+        .hide-mobile { display: inline-flex; }
+        @media (max-width: 640px) {
           .cards-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
           .filters-row { flex-direction: column; }
           .filters-row input, .filters-row select, .filters-row button {
@@ -147,7 +167,7 @@ export default function Home() {
           .hero-title { font-size: 22px !important; }
           .hero-sub { font-size: 13px !important; }
           .card-price { font-size: 18px !important; }
-          .nav-subtitle { display: none; }
+          .hide-mobile { display: none !important; }
           .stat-value { font-size: 20px !important; }
         }
         @media (max-width: 380px) {
@@ -163,6 +183,7 @@ export default function Home() {
         position: "sticky", top: 0, zIndex: 100,
         boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
       }}>
+        {/* Logo */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <div style={{
             width: "36px", height: "36px", borderRadius: "50%",
@@ -175,8 +196,12 @@ export default function Home() {
             AgroPrice <span style={{ color: C.amber }}>Malawi</span>
           </span>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-          <span className="nav-subtitle" style={{
+
+        {/* Right side */}
+        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+          <a href="/about" className="hide-mobile" style={{ color: "#C8E6C9", fontSize: "13px", textDecoration: "none", fontWeight: 500 }}>About</a>
+          <a href="/contact" className="hide-mobile" style={{ color: "#C8E6C9", fontSize: "13px", textDecoration: "none", fontWeight: 500 }}>Contact</a>
+          <span className="hide-mobile" style={{
             background: C.amber, color: C.dark,
             fontSize: "11px", fontWeight: 600,
             padding: "4px 10px", borderRadius: "20px",
@@ -184,13 +209,14 @@ export default function Home() {
             {t.updatedDaily}
           </span>
           <button
-            onClick={() => setLang(lang === "en" ? "chi" : "en")}
+            onClick={() => setLang(prev => prev === "en" ? "chi" : "en")}
             style={{
               background: lang === "chi" ? C.amber : "rgba(255,255,255,0.15)",
               color: lang === "chi" ? C.dark : C.white,
               border: "1.5px solid rgba(255,255,255,0.4)",
               borderRadius: "20px", padding: "6px 14px",
               fontSize: "13px", fontWeight: 700, cursor: "pointer",
+              WebkitAppearance: "none",
             }}
           >
             {t.langBtn}
@@ -225,19 +251,19 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Stat bar */}
+      {/* Animated stat bar */}
       <div style={{
-        background: C.dark, padding: "12px 20px",
-        display: "flex", justifyContent: "center", gap: "28px", flexWrap: "wrap",
+        background: C.dark, padding: "14px 20px",
+        display: "flex", justifyContent: "center", gap: "40px", flexWrap: "wrap",
       }}>
         {[
-          { label: t.markets, value: markets.length },
-          { label: t.cropsTracked, value: crops.length },
-          { label: t.entries, value: prices.length },
+          { label: t.markets,      value: countMarkets },
+          { label: t.cropsTracked, value: countCrops },
+          { label: t.entries,      value: countPrices },
         ].map(stat => (
           <div key={stat.label} style={{ textAlign: "center" }}>
-            <div className="stat-value" style={{ color: C.amber, fontWeight: 700, fontSize: "22px" }}>{stat.value}</div>
-            <div style={{ color: "#aaa", fontSize: "11px" }}>{stat.label}</div>
+            <div className="stat-value" style={{ color: C.amber, fontWeight: 800, fontSize: "26px", fontVariantNumeric: "tabular-nums" }}>{stat.value}</div>
+            <div style={{ color: "#aaa", fontSize: "11px", marginTop: "2px" }}>{stat.label}</div>
           </div>
         ))}
       </div>
@@ -246,11 +272,16 @@ export default function Home() {
       <div style={{ background: C.white, borderBottom: "1px solid #ddd", padding: "14px 16px" }}>
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
           <div className="filters-row">
-            <input
-              type="text" placeholder={t.searchPlaceholder}
-              value={search} onChange={e => setSearch(e.target.value)}
-              style={{ ...sel, flex: 1, minWidth: "160px" }}
-            />
+            <div style={{ position: "relative", flex: 1, minWidth: "160px" }}>
+              <svg style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", pointerEvents: "none" }} width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#888" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+              </svg>
+              <input
+                type="text" placeholder={t.searchPlaceholder}
+                value={search} onChange={e => setSearch(e.target.value)}
+                style={{ ...sel, width: "100%", paddingLeft: "36px", boxSizing: "border-box" as const }}
+              />
+            </div>
             <select value={selectedCrop} onChange={e => setSelectedCrop(e.target.value)} style={sel}>
               <option value="All">{t.allCrops}</option>
               {crops.map(c => (
@@ -291,7 +322,6 @@ export default function Home() {
                     border: "1px solid #dde8dd", overflow: "hidden",
                     boxShadow: "0 2px 6px rgba(0,0,0,0.07)",
                   }}>
-
                     {/* Crop visual */}
                     <div style={{
                       position: "relative", height: "110px", overflow: "hidden",
@@ -344,7 +374,6 @@ export default function Home() {
                         {t.updatedLabel} {item.updated}
                       </div>
                     </div>
-
                   </div>
                 );
               })}
@@ -370,7 +399,11 @@ export default function Home() {
           </span>
         </div>
         {t.footerTagline}
-        <div style={{ marginTop: "8px", fontSize: "11px" }}>© {new Date().getFullYear()} AgroPrice Malawi</div>
+        <div style={{ marginTop: "4px", fontSize: "11px" }}>
+          <a href="/about" style={{ color: "#aaa", textDecoration: "none", marginRight: "16px" }}>About</a>
+          <a href="/contact" style={{ color: "#aaa", textDecoration: "none" }}>Contact</a>
+        </div>
+        <div style={{ marginTop: "4px", fontSize: "11px" }}>© {new Date().getFullYear()} AgroPrice Malawi</div>
       </footer>
 
     </main>
